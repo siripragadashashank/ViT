@@ -15,7 +15,10 @@ class ViTDataLoader:
     def get_train_loader(self):
 
         train_transform = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomResizedCrop((32, 32), scale=(0.8, 1.0), ratio=(0.9, 1.1)),
             transforms.ToTensor(),
+            transforms.Normalize([0.49139968, 0.48215841, 0.44653091], [0.24703223, 0.24348513, 0.26158784])
         ])
         train_dataset = CIFAR10(
             root=self.dataset_path,
@@ -40,9 +43,10 @@ class ViTDataLoader:
 
     def get_val_loader(self):
 
-        val_transform = transforms.Compose(
+        val_transform = transforms.Compose([
             transforms.ToTensor(),
-        )
+            transforms.Normalize([0.49139968, 0.48215841, 0.44653091], [0.24703223, 0.24348513, 0.26158784])
+        ])
 
         val_dataset = CIFAR10(
             root=self.dataset_path,
@@ -53,6 +57,7 @@ class ViTDataLoader:
 
         pl.seed_everything(42)
         _, val_set = torch.utils.data.random_split(val_dataset, [45000, 5000])
+
         val_loader = DataLoader(
             val_set,
             batch_size=4,
@@ -66,7 +71,9 @@ class ViTDataLoader:
     def get_test_loader(self):
         test_transform = transforms.Compose([
             transforms.ToTensor(),
+            transforms.Normalize([0.49139968, 0.48215841, 0.44653091], [0.24703223, 0.24348513, 0.26158784])
         ])
+
         test_dataset = CIFAR10(
             root=self.dataset_path,
             train=False,
