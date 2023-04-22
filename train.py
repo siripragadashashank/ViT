@@ -20,7 +20,8 @@ def train_model(**kwargs):
                          devices=1,
                          max_epochs=180,
                          callbacks=[ModelCheckpoint(save_weights_only=True, mode="max", monitor="val_acc"),
-                                    LearningRateMonitor("epoch")])
+                                    LearningRateMonitor("epoch")]
+                         )
     trainer.logger._log_graph = True         # If True, we plot the computation graph in tensorboard
     trainer.logger._default_hp_metric = None  # Optional logging argument that we don't need
 
@@ -31,12 +32,15 @@ def train_model(**kwargs):
     test_loader = vit_loader.get_test_loader()
 
     pretrained_filename = os.path.join(CHECKPOINT_PATH, "ViT.ckpt")
+
+    pretrained = os.path.join(CHECKPOINT_PATH, "ViT/lightning_logs/version_0/checkpoints/epoch=36-step=416250.ckpt")
     if os.path.isfile(pretrained_filename):
         print(f"Found pretrained model at {pretrained_filename}, loading...")
         model = ViT.load_from_checkpoint(pretrained_filename)
-    else:
+    elif os.path.isfile(pretrained):
         pl.seed_everything(42)
-        model = ViT(**kwargs)
+        # model = ViT(**kwargs)
+        model = ViT.load_from_checkpoint(pretrained)
         trainer.fit(model, train_loader, val_loader)
         model = ViT.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
 
