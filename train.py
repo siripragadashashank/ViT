@@ -8,6 +8,9 @@ from datasets import ViTDataLoader
 
 def train_model(**kwargs):
 
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
     CHECKPOINT_PATH = "saved_models/new/"
 
     device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
