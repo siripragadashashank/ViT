@@ -7,10 +7,10 @@ from models.cnn import CNN
 
 class LiTCNN(pl.LightningModule):
 
-    def __init__(self, model_kwargs):
+    def __init__(self, lr):
         super().__init__()
         self.save_hyperparameters()
-        self.model = CNN(**model_kwargs)
+        self.model = CNN()
         vit_loader = ViTDataLoader(dataset_path="data")
         train_loader = vit_loader.get_train_loader()
         self.example_input_array = next(iter(train_loader))[0]

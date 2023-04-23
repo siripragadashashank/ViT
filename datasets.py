@@ -9,11 +9,11 @@ from torch.utils.data import DataLoader
 
 
 class ViTDataLoader:
-    def __init__(self, dataset_path):
+    def __init__(self, dataset_path, batch_size=4):
         self.dataset_path = dataset_path
+        self.batch_size = batch_size
 
     def get_train_loader(self):
-
         train_transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             transforms.RandomResizedCrop((32, 32), scale=(0.8, 1.0), ratio=(0.9, 1.1)),
@@ -32,7 +32,7 @@ class ViTDataLoader:
 
         train_loader = DataLoader(
             train_set,
-            batch_size=4,
+            batch_size=self.batch_size,
             shuffle=True,
             drop_last=True,
             pin_memory=True,
@@ -42,7 +42,6 @@ class ViTDataLoader:
         return train_loader
 
     def get_val_loader(self):
-
         val_transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize([0.49139968, 0.48215841, 0.44653091], [0.24703223, 0.24348513, 0.26158784])
@@ -60,7 +59,7 @@ class ViTDataLoader:
 
         val_loader = DataLoader(
             val_set,
-            batch_size=4,
+            batch_size=self.batch_size,
             shuffle=False,
             drop_last=False,
             num_workers=4
@@ -82,7 +81,7 @@ class ViTDataLoader:
         )
         test_loader = DataLoader(
             test_dataset,
-            batch_size=4,
+            batch_size=self.batch_size,
             shuffle=False,
             drop_last=False,
             num_workers=4
