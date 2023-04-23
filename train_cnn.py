@@ -6,7 +6,7 @@ from lightning_cnn import LiTCNN
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 
 
-def train_model(**kwargs):
+def train_model(batch_size=128, **kwargs):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
@@ -25,7 +25,7 @@ def train_model(**kwargs):
     trainer.logger._log_graph = True         # If True, we plot the computation graph in tensorboard
     trainer.logger._default_hp_metric = None  # Optional logging argument that we don't need
 
-    vit_loader = ViTDataLoader(dataset_path='data', batch_size=128)
+    vit_loader = ViTDataLoader(dataset_path='data', batch_size=batch_size)
     train_loader = vit_loader.get_train_loader()
     val_loader = vit_loader.get_val_loader()
     test_loader = vit_loader.get_test_loader()
