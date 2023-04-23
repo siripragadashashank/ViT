@@ -6,7 +6,7 @@ from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from datasets import ViTDataLoader
 
 
-def train_model(**kwargs):
+def train_model(batch_size=128, **kwargs):
 
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
@@ -26,21 +26,19 @@ def train_model(**kwargs):
     trainer.logger._default_hp_metric = None  # Optional logging argument that we don't need
 
     # Check whether pretrained model exists. If yes, load it and skip training
-    vit_loader = ViTDataLoader(dataset_path='data')
+    vit_loader = ViTDataLoader(dataset_path='data', batch_size=batch_size)
     train_loader = vit_loader.get_train_loader()
     val_loader = vit_loader.get_val_loader()
     test_loader = vit_loader.get_test_loader()
 
     pretrained_filename = os.path.join(CHECKPOINT_PATH, "ViT.ckpt")
 
-    pretrained = os.path.join(CHECKPOINT_PATH, "ViT/lightning_logs/version_0/checkpoints/epoch=36-step=416250.ckpt")
     if os.path.isfile(pretrained_filename):
         print(f"Found pretrained model at {pretrained_filename}, loading...")
         model = ViT.load_from_checkpoint(pretrained_filename)
-    elif os.path.isfile(pretrained):
+    else:
         pl.seed_everything(42)
-        # model = ViT(**kwargs)
-        model = ViT.load_from_checkpoint(pretrained)
+        model = ViT(**kwargs)
         trainer.fit(model, train_loader, val_loader)
         model = ViT.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
 
@@ -53,7 +51,7 @@ def train_model(**kwargs):
 
 
 if __name__ == '__main__':
-    model, results = train_model(model_kwargs={
+    vit_model, results = train_model(model_kwargs={
         'embed_dim': 256,
         'hidden_dim': 512,
         'num_heads': 8,
