@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 
 
 class ViTDataLoader:
-    def __init__(self, dataset_path, batch_size=4):
+    def __init__(self, dataset_path, batch_size=128):
         self.dataset_path = dataset_path
         self.batch_size = batch_size
 
