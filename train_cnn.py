@@ -2,7 +2,7 @@ import os
 import torch
 import pytorch_lightning as pl
 from datasets import ViTDataLoader
-from lightning_cnn import LiTCNN
+from lightning import LiTCNN
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 
 
@@ -10,7 +10,7 @@ def train_model(batch_size=128, **kwargs):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    CHECKPOINT_PATH = "saved_models/new/"
+    CHECKPOINT_PATH = "saved_models/experiments/"
 
     device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
