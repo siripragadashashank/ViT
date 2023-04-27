@@ -1,2 +1,2 @@
 # Vision Transformer
-![vit](vit.gif)
+![vit](assets/vit.gif)
